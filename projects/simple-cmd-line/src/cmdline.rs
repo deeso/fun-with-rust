@@ -21,7 +21,7 @@ fn main() {
 	};*/
 	let mut file = File::open(&path);
 	let fread_result = file.read_to_end();
-	let contents : Option<Vec<u8>> = None;
+	let contents : Vec<u8>;
 	match fread_result {
 	    // The read was valid
 	    Ok(x) => {
@@ -30,13 +30,15 @@ fn main() {
 	    },
 	    // The read was invalid
 	    Err(e) => {
+	    //None => {
 	    	println!("File was invalid");
 	    	contents = Vec::new();
 	    }
 	}
 	let sz : u64 = path.stat().unwrap().size;
-	let s = format!("Filename: {:s} Size: {:x}", *file_name, sz);
-	let s = format!("Contents Len: {:x}", contents.len());
+	let mut s = format!("Filename: {:s} Size: {:x}", *file_name, sz);
+	println!("{}",s);
+	s = format!("Contents Len: {:x}", contents.len());
 	println!("{}",s);
 	//print_hex (contents);
 }
