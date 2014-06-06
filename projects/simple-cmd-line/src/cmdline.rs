@@ -4,9 +4,6 @@ use std::path::Path;
 use std::os;
 use std::str;
 
-fn print_hex (bytes: &Vec<u8>) {
-	println!("Len of bytes: {}", bytes.len());
-}
 
 fn main() {
 	let args = os::args();
@@ -22,11 +19,13 @@ fn main() {
 	let mut file = File::open(&path);
 	let fread_result = file.read_to_end();
 	let contents : Vec<u8>;
+	let mut sz : u64 = 0;
 	match fread_result {
 	    // The read was valid
 	    Ok(x) => {
 	    	println!("File was valid");
 	    	contents = x.clone();
+	    	sz = path.stat().unwrap().size;
 	    },
 	    // The read was invalid
 	    Err(e) => {
@@ -35,10 +34,8 @@ fn main() {
 	    	contents = Vec::new();
 	    }
 	}
-	let sz : u64 = path.stat().unwrap().size;
 	let mut s = format!("Filename: {:s} Size: {:x}", *file_name, sz);
 	println!("{}",s);
 	s = format!("Contents Len: {:x}", contents.len());
 	println!("{}",s);
-	//print_hex (contents);
 }
