@@ -2,7 +2,7 @@ extern crate getopts;
 use getopts::{optflag,getopts,OptGroup, usage, reqopt, optopt};
 use std::string::{String};
 use std::os;
-
+use std::str;
 
 use std::io::{TcpListener, TcpStream};
 use std::io::{Acceptor, Listener};
@@ -18,17 +18,17 @@ fn parse_int (input: &String) -> u32 {
 }
 
 
-fn create_listener (address: &String, port: &String) -> TcpListener {
+fn create_client_socket (address: &String, port: &String) -> TcpStream {
 	let iPort = parse_int (port);
 
 	if iPort <= 0{
 		fail!("Invalid port value: {}", port);
 	}
-	let listener = match TcpListener::bind(address.as_slice(), iPort as u16) {
-		Ok(l) => l,
-		Err(e) => fail!("Err: Unable to start the listener server: {}", e)
+	let mut socket = match TcpStream::connect(address.as_slice(), iPort as u16) {
+		Ok(s) => s,
+		Err(e) => fail!("Err: Unable to connect to the server: {}", e)
 	};
-	return listener;
+	return socket;
 }
 
 
@@ -55,26 +55,19 @@ fn print_usage(program : String, optgroups: &[OptGroup]) {
 	println!("{}", generated_usage);
 }
 
-fn handle_client (mut stream: TcpStream) {
-	println!("Peer Connected Address: {}", stream.peer_name().unwrap());
-	stream.write(bytes!("Hello\n\n"));
-	stream.write(bytes!("Goodbye\n\n"));
-	let mut buf = [0];
-	stream.read(buf);
-}
-
-fn run_server (mut listener : TcpListener) {
-	let mut acceptor = listener.listen();
-	for stream in acceptor.incoming() {
-		match stream {
-			Err(e) => { println!("connection failed: {}", e) }
-			Ok(stream) => spawn(proc() {
-				// connection succeeded
-				handle_client(stream)
-			})
+fn make_request (mut socket : TcpStream) -> Vec<u8>{
+	let response = match socket.read_to_end(){
+		Ok(data) =>{
+			println!("Recieved the following data:\n{}",str::from_utf8_lossy(data.as_slice ()).into_string());
+			data
+		},
+		Err (e) => {
+			println!("Failed to read the data: {}", e)
+			Vec::new()
 		}
-	}
-	drop(acceptor);
+	};
+	socket.write (bytes!("\x00"));
+	return response;
 }
 
 fn main () {
@@ -114,6 +107,7 @@ fn main () {
 		k
 	};
 
-	let listener = create_listener (&address, &port);
-	run_server (listener)
+	let socket = create_client_socket (&address, &port);
+	//let response = make_request (socket);
+	make_request (socket);
 }
