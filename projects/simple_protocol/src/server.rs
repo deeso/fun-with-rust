@@ -24,7 +24,7 @@ pub struct Server {
 }
 
 impl Server {
-	fn init_listener (address : &String, port: String) {
-
+	fn new (address : &String, port: &String) -> Result <Server, ParseFailure>{
+		let iPort = parse_int (port);
 	}
 }

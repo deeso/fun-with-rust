@@ -5,3 +5,9 @@ pub enum ConnectionFailure {
 	HostNotFound,
 	ConnectionRefused,
 }
+
+#[deriving(Clone, PartialEq, Eq)]
+pub enum ParseFailure {
+	InvalidPortString,
+	InvalidHostname,
+}
