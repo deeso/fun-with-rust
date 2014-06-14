@@ -4,6 +4,7 @@ use std::io::Reader;
 use std::str::from_utf8;
 
 pub struct Parser<T> {
-	priv iter: T,
+	pub consumed: u32,
+	//priv iter: T
 }
 

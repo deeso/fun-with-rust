@@ -4,7 +4,7 @@ include rust.mk
 all: bin
 
 # Crates
-$(eval $(call RUST_CRATE,BIN,src/cmdline.rs))
+$(eval $(call RUST_CRATE,BIN,src/lib.rs))
 
 # Convenience targets
 bin: $(BIN_OUT)
