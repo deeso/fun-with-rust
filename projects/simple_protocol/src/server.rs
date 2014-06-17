@@ -6,7 +6,7 @@ use std::collections::Map;
 use std::collections::HashMap;
 use std::io::net::tcp::TcpStream;
 
-use std::io::net::ip::{IpAddr, FromStr};
+use std::io::net::ip::{IpAddr};
 use std::io::net::tcp::{TcpAcceptor, TcpListener};
 
 use time;
@@ -14,21 +14,12 @@ use enums::*;
 
 
 pub struct Server {
-	addr: IpAddr,
+	addr: String,
 	port: u16,
-	src_bytes: u64,
-	id: u64,
-	str_addr: String,
-	str_port: String,
-	acceptor: TcpAcceptor
+	acceptor: TcpAcceptor,
+	clients : HashMap< Box<String>, TcpStream>
 }
 
 impl Server {
-	fn new (address : &String, port: &String) /*-> Result <Server, ParseFailure>*/{
-		let iPort = parse_int (port);
-		if iPort <= 0{
-			fail!("Invalid port value: {}", port);
-		}
-		let ipAddr : Option <IpAddr> = FromStr::from_str (address.from_utf8());
-	}
+
 }
