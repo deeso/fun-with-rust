@@ -1,6 +1,12 @@
 #[deriving(Show)]
 pub enum Error {
-	FailedToOpenFile,
-	FailedToReadFile,
 	FailedToExtractContent,
 }
+
+pub enum RCoreError {
+	FailedToInitCore,
+	FailedToOpenFile,
+	FailedToLoadBin,
+	FailedCommandExec,
+}
+

@@ -1,9 +1,85 @@
 #![crate_id = "r2extractor#0.1"]
 #![crate_type = "lib"]
+#![allow(unused_imports)]
 
 extern crate libc;
+use libc::{c_void, c_int, c_uint, c_short, c_ushort, c_uchar, c_char};
+use libc::types::os::arch::c99;
+use std::ptr;
 
 pub mod error;
-pub mod ffi_rcore;
-//pub mod rcore;
+mod ffi_rcore;
+#[cfg(test)]
+mod tests;
+
+pub struct RCore {
+	core: *ffi_rcore::RCore,
+	owned: bool
+}
+
+impl Drop for RCore {
+	fn drop(&mut self) {
+		if self.owned {
+			unsafe {
+				ffi_rcore::r_core_free(self.core);
+			}
+		}
+	}
+}
+
+impl RCore {
+
+	pub fn try_new () -> Result<RCore, error::RCoreError> {
+		let core = unsafe { ffi_rcore::r_core_new()};
+		if core == ptr::null() {
+			return Err(error::FailedToInitCore);
+		}
+		let core = RCore { core: core, owned: true };
+		Ok(core)
+	}
+
+    pub fn r_core_file_open(&mut self, file: &str, mode : int, loadaddr : u64 ) -> Option<error::RCoreError>  {
+        let ret = file.with_c_str(|file| {
+            unsafe {
+                ffi_rcore::r_core_file_open(self.core, file, mode as c_int, loadaddr as ffi_rcore::ut64)
+            }
+        });
+
+        if (ret as c_int) == ffi_rcore::R_FAIL {
+            Some(error::FailedToOpenFile)
+        } else {
+            None
+        }
+    }
+
+    pub fn r_core_bin_load(&mut self, file: &str, baseaddr : u64 ) -> Option<error::RCoreError>  {
+        let ret = file.with_c_str(|file| {
+            unsafe {
+                ffi_rcore::r_core_bin_load(self.core, file, baseaddr as ffi_rcore::ut64)
+            }
+        });
+
+        if (ret as c_int) == ffi_rcore::R_FAIL {
+            Some(error::FailedToOpenFile)
+        } else {
+            None
+        }
+    }
+
+    pub fn r_core_cmd(&mut self, cmd: &str, log: int) -> Option<error::RCoreError> {
+        let ret = cmd.with_c_str(|file| {
+            unsafe {
+                ffi_rcore::r_core_cmd(self.core, file, log as c_int)
+            }
+        });
+        if (ret as c_int) == ffi_rcore::R_FAIL {
+            Some(error::FailedCommandExec)
+        } else {
+            None
+        }
+    }
+}
+
+
+
 
