@@ -7,10 +7,18 @@ use std::ptr;
 use std::str;
 
 use error;
-
+use RCore;
 
 
 #[test]
 fn test_new_rcore() {
     RCore::try_new();
+}
+
+#[test]
+fn test_new_rcore_file_open() {
+	let filename = "/bin/ls";
+	let mode : int = 0;
+	let loadaddr : u64 = 0;
+    let mut core : RCore = RCore::new();
 }

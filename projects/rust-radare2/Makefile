@@ -5,13 +5,13 @@ CFLAGS = -g
 lib:
 	@echo "Building basic lib..."
 	@mkdir -p build
-	@rustc --out-dir build r2extractor/mod.rs $(CFLAGS)
+	@rustc --out-dir build r2extractor/r2extractor.rs $(CFLAGS)
 	@echo "done."
 
 test:
 	@echo "Building libr2extractor tests..."
 	@mkdir -p build
-	@rustc --out-dir build --test r2extractor/mod.rs
+	@rustc --out-dir build --test r2extractor/r2extractor.rs
 	@echo "done."
 	@echo -n "Running..."
 	@build/r2extractor

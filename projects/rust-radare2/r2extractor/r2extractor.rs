@@ -30,7 +30,7 @@ impl RCore {
 
 	pub fn try_new () -> Result<RCore, error::RCoreError> {
 		let core = unsafe { ffi_rcore::r_core_new()};
-		if core == ptr::null() {
+		if core.is_null() {
 			return Err(error::FailedToInitCore);
 		}
 		let core = RCore { core: core, owned: true };
