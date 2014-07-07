@@ -33,8 +33,8 @@ impl RCore {
 		if core.is_null() {
 			return Err(error::FailedToInitCore);
 		}
-		let core = RCore { core: core, owned: true };
-		Ok(core)
+		let rcore = RCore { core: core, owned: false };
+		Ok(rcore)
 	}
 
     pub fn new() -> RCore {

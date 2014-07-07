@@ -17,8 +17,9 @@ fn test_new_rcore() {
 
 #[test]
 fn test_new_rcore_file_open() {
-	let filename = "/bin/ls";
-	let mode : int = 0;
-	let loadaddr : u64 = 0;
-    let mut core : RCore = RCore::new();
+    let mut core : RCore = match RCore::try_new() {
+        Ok(core) => core,
+        Err(err) => fail!("Expected a valid core structure back")
+    };
+	//let filename = "/bin/ls"; //when this is commented out it works
 }
